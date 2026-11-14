@@ -1,8 +1,10 @@
 using StillSky.Core;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace StillSky.Characters
 {
+    [RequireComponent(typeof(NavMeshAgent))]
     public abstract class EnemyCharacter : Character
     {
         protected enum State { Idle, Chase, Attack, Dead }
@@ -12,11 +14,25 @@ namespace StillSky.Characters
         [SerializeField] protected float attackRange = 1.8f;
         [SerializeField] protected float attackCooldown = 1.5f;
         [SerializeField] protected float turnSpeed = 8f;
+        [Tooltip("Seconds between path recalculations while chasing. SetDestination every frame is wasteful.")]
+        [SerializeField] protected float repathInterval = 0.2f;
 
         protected State CurrentState { get; private set; } = State.Idle;
         protected Character Target { get; private set; }
 
+        protected NavMeshAgent Agent { get; private set; }
+
         private float nextAttackTime;
+        private float nextRepathTime;
+
+        protected override void Awake()
+        {
+            base.Awake(); // Health + stats
+            Agent = GetComponent<NavMeshAgent>();
+            Agent.speed = stats != null ? stats.moveSpeed : 3.5f;
+            Agent.stoppingDistance = attackRange * 0.9f; // stop just inside swing range
+            Agent.updateRotation = false;                // we rotate ourselves (FaceTarget / FaceMovement)
+        }
 
         protected virtual void Update()
         {
@@ -61,18 +77,29 @@ namespace StillSky.Characters
             return best;
         }
 
-        protected virtual void TickIdle() { }
+        protected virtual void TickIdle()
+        {
+            StopMoving();
+        }
 
         protected virtual void TickChase()
         {
-            FaceTarget();
-            float speed = stats != null ? stats.moveSpeed : 3.5f;
-            // Straight-line chase for the slice; swap to NavMeshAgent once levels have walls.
-            transform.position += transform.forward * (speed * Time.deltaTime);
+            if (!Agent.isOnNavMesh) return; // spawned off the mesh: SetDestination would throw
+
+            Agent.isStopped = false;
+
+            if (Time.time >= nextRepathTime)
+            {
+                Agent.SetDestination(Target.transform.position);
+                nextRepathTime = Time.time + repathInterval;
+            }
+
+            FaceMovement();
         }
 
         protected virtual void TickAttack()
         {
+            StopMoving();
             FaceTarget();
             if (Time.time < nextAttackTime) return;
 
@@ -86,6 +113,8 @@ namespace StillSky.Characters
         {
             CurrentState = State.Dead;
             Target = null;
+            StopMoving();
+            Agent.enabled = false; // corpses don't path or push other agents
             GrantReward();
         }
 
@@ -105,6 +134,27 @@ namespace StillSky.Characters
             Vector3 dir = Target.transform.position - transform.position;
             dir.y = 0f;
             if (dir.sqrMagnitude < 0.001f) return;
+
+            Quaternion look = Quaternion.LookRotation(dir);
+            transform.rotation = Quaternion.Slerp(transform.rotation, look, turnSpeed * Time.deltaTime);
+        }
+
+        protected void StopMoving()
+        {
+            if (Agent.isOnNavMesh && !Agent.isStopped)
+            {
+                Agent.isStopped = true;
+                Agent.ResetPath();
+            }
+            nextRepathTime = 0f; // repath immediately when the chase resumes
+        }
+
+        /// <summary>Turn toward where the agent is heading (follows the path around corners).</summary>
+        protected void FaceMovement()
+        {
+            Vector3 dir = Agent.desiredVelocity;
+            dir.y = 0f;
+            if (dir.sqrMagnitude < 0.01f) { FaceTarget(); return; }
 
             Quaternion look = Quaternion.LookRotation(dir);
             transform.rotation = Quaternion.Slerp(transform.rotation, look, turnSpeed * Time.deltaTime);
