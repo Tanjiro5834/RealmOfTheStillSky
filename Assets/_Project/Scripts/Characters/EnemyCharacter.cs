@@ -1,3 +1,4 @@
+using StillSky.Core;
 using UnityEngine;
 
 namespace StillSky.Characters
@@ -5,6 +6,7 @@ namespace StillSky.Characters
     /// <summary>
     /// Base for every enemy: a simple Idle -> Chase -> Attack state machine.
     /// Subclasses only decide HOW they attack (PerformAttack) and can override any Tick.
+    /// Grants its Ember reward to whoever landed the killing blow.
     /// </summary>
     public abstract class EnemyCharacter : Character
     {
@@ -44,13 +46,13 @@ namespace StillSky.Characters
             return InRange(Target, attackRange) ? State.Attack : State.Chase;
         }
 
-        /// <summary>Default: the closest hostile character within detect range.</summary>
+        /// <summary>Default: the closest living hostile character within detect range.</summary>
         protected virtual Character FindTarget()
         {
             Character best = null;
             float bestDist = detectRange;
 
-            foreach (Character c in FindObjectsByType<Character>(FindObjectsSortMode.None))
+            foreach (Character c in All)
             {
                 if (!c.IsAlive || !IsHostileTo(c)) continue;
 
@@ -90,6 +92,15 @@ namespace StillSky.Characters
         {
             CurrentState = State.Dead;
             Target = null;
+            GrantReward();
+        }
+
+        private void GrantReward()
+        {
+            if (stats == null || stats.emberReward <= 0 || LastDamageSource == null) return;
+
+            var wallet = LastDamageSource.GetComponentInParent<EmberWallet>();
+            if (wallet != null) wallet.Add(stats.emberReward);
         }
 
         protected bool InRange(Character c, float range) =>

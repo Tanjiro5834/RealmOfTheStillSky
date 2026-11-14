@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using StillSky.Core;
 using UnityEngine;
 
@@ -11,6 +12,10 @@ namespace StillSky.Characters
     [RequireComponent(typeof(Health))]
     public abstract class Character : MonoBehaviour
     {
+        // Registry of every active character: cheap lookups without scanning the scene.
+        private static readonly List<Character> all = new();
+        public static IReadOnlyList<Character> All => all;
+
         [SerializeField] protected CharacterStats stats;
 
         public Health Health { get; private set; }
@@ -19,7 +24,10 @@ namespace StillSky.Characters
         public string DisplayName => stats != null ? stats.displayName : name;
         public bool IsAlive => !Health.IsDead;
 
-        /// <summary>Raised after OnDeath; quests, spawners and UI listen to this.</summary>
+        /// <summary>Who hit this character last (used for Ember rewards).</summary>
+        protected GameObject LastDamageSource { get; private set; }
+
+        /// <summary>Raised after OnDeath; quests, spawners, respawn and UI listen to this.</summary>
         public event Action<Character> Died;
 
         protected virtual void Awake()
@@ -30,12 +38,14 @@ namespace StillSky.Characters
 
         protected virtual void OnEnable()
         {
+            all.Add(this);
             Health.Damaged += HandleDamaged;
             Health.Died += HandleDied;
         }
 
         protected virtual void OnDisable()
         {
+            all.Remove(this);
             Health.Damaged -= HandleDamaged;
             Health.Died -= HandleDied;
         }
@@ -48,7 +58,11 @@ namespace StillSky.Characters
         }
 
         // Template method: the base wires events, subclasses fill in the reaction.
-        private void HandleDamaged(float amount, GameObject source) => OnDamaged(amount, source);
+        private void HandleDamaged(float amount, GameObject source)
+        {
+            LastDamageSource = source;
+            OnDamaged(amount, source);
+        }
 
         private void HandleDied()
         {

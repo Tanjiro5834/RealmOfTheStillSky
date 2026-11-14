@@ -29,6 +29,12 @@ namespace StillSky.Core
                 Current = Mathf.Min(max, Current + regenPerSecond * Time.deltaTime);
         }
 
+        /// <summary>Instantly fills stamina (campfire rest, respawn).</summary>
+        public void Refill()
+        {
+            Current = max;
+        }
+
         /// <summary>Returns false (and spends nothing) when stamina is empty.</summary>
         public bool TryUse(float amount)
         {
