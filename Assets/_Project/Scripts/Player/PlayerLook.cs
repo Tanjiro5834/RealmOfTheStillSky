@@ -3,7 +3,6 @@ using UnityEngine.InputSystem;
 
 public class PlayerLook : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField] private Transform cameraPivot;
     [SerializeField] private InputActionReference lookAction;
     [SerializeField] private float sensitivity = 0.1f;
@@ -26,7 +25,6 @@ public class PlayerLook : MonoBehaviour
         Cursor.visible = true; 
     }
 
-    // Update is called once per frame
     void Update()
     {
         Vector2 delta = lookAction.action.ReadValue<Vector2>() * sensitivity;
