@@ -17,6 +17,8 @@ namespace StillSky.Player
         private EmberWallet wallet;
         private Vector3 basePosition;
 
+        private bool armed;
+
         public void Init(int embers, EmberWallet owner)
         {
             amount = embers;
@@ -30,7 +32,14 @@ namespace StillSky.Player
 
             if (wallet == null) return;
 
-            if (Vector3.Distance(wallet.transform.position, basePosition) <= pickupRadius)
+            float dist = Vector3.Distance(wallet.transform.position, basePosition);
+            if (!armed)
+            {
+                armed = dist <= pickupRadius;
+                return;
+            }
+
+            if(dist <= pickupRadius)
             {
                 wallet.Add(amount);
                 Debug.Log($"Recovered {amount} Embers");

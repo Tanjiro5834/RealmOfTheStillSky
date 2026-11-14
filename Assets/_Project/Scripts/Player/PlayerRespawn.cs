@@ -52,6 +52,7 @@ namespace StillSky.Player
         private IEnumerator RespawnRoutine(Vector3 deathPosition)
         {
             int lost = wallet != null ? wallet.TakeAll() : 0;
+            if(lost == 0) Debug.Log("Died with 0 embers - no drop.");
 
             yield return new WaitForSeconds(respawnDelay);
 
