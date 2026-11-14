@@ -3,11 +3,6 @@ using UnityEngine;
 
 namespace StillSky.Characters
 {
-    /// <summary>
-    /// Base for every enemy: a simple Idle -> Chase -> Attack state machine.
-    /// Subclasses only decide HOW they attack (PerformAttack) and can override any Tick.
-    /// Grants its Ember reward to whoever landed the killing blow.
-    /// </summary>
     public abstract class EnemyCharacter : Character
     {
         protected enum State { Idle, Chase, Attack, Dead }
@@ -85,7 +80,6 @@ namespace StillSky.Characters
             nextAttackTime = Time.time + attackCooldown;
         }
 
-        /// <summary>Melee swing, arrow, spell... each enemy type decides.</summary>
         protected abstract void PerformAttack(Character target);
 
         protected override void OnDeath()

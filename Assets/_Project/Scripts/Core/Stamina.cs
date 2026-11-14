@@ -2,11 +2,6 @@ using UnityEngine;
 
 namespace StillSky.Core
 {
-    /// <summary>
-    /// Souls-style stamina: an action is allowed while stamina is above 0,
-    /// even if it costs more than what's left (it just drops to 0).
-    /// Regen waits a short delay after the last use.
-    /// </summary>
     public class Stamina : MonoBehaviour
     {
         [SerializeField] private float max = 100f;
@@ -28,14 +23,10 @@ namespace StillSky.Core
             if (Current < max && Time.time - lastUseTime >= regenDelay)
                 Current = Mathf.Min(max, Current + regenPerSecond * Time.deltaTime);
         }
-
-        /// <summary>Instantly fills stamina (campfire rest, respawn).</summary>
         public void Refill()
         {
             Current = max;
         }
-
-        /// <summary>Returns false (and spends nothing) when stamina is empty.</summary>
         public bool TryUse(float amount)
         {
             if (Current <= 0f) return false;

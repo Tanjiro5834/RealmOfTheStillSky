@@ -35,7 +35,7 @@ namespace StillSky.Player
             float dist = Vector3.Distance(wallet.transform.position, basePosition);
             if (!armed)
             {
-                armed = dist <= pickupRadius;
+                armed = dist > pickupRadius;
                 return;
             }
 

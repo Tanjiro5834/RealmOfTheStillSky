@@ -5,11 +5,6 @@ using UnityEngine.InputSystem;
 
 namespace StillSky.Player
 {
-    /// <summary>
-    /// Dodge roll in the move direction (backstep if no input).
-    /// Takes over PlayerMotor's horizontal velocity for the duration
-    /// and makes Health invulnerable during the i-frame window.
-    /// </summary>
     [RequireComponent(typeof(PlayerMotor))]
     public class PlayerDodge : MonoBehaviour
     {
@@ -71,7 +66,7 @@ namespace StillSky.Player
             Vector2 input = moveAction.action.ReadValue<Vector2>();
             Vector3 direction = input.sqrMagnitude > 0.01f
                 ? (transform.right * input.x + transform.forward * input.y).normalized
-                : -transform.forward; // no input = backstep
+                : -transform.forward;
 
             for (float t = 0f; t < duration; t += Time.deltaTime)
             {

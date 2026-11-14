@@ -5,10 +5,6 @@ using UnityEngine;
 
 namespace StillSky.Player
 {
-    /// <summary>
-    /// Souls-style death: Kael drops all Embers where he fell and respawns at the last campfire.
-    /// Dying again before recovering them destroys the old drop.
-    /// </summary>
     [RequireComponent(typeof(PlayerCharacter))]
     public class PlayerRespawn : MonoBehaviour
     {
@@ -18,7 +14,9 @@ namespace StillSky.Player
         [SerializeField] private float respawnDelay = 2.5f;
 
         private PlayerCharacter player;
+        private CharacterController controller;
         private Vector3 checkpoint;
+        private Vector3 lastGroundedPosition;
         private EmberDrop activeDrop;
 
         public Vector3 Checkpoint => checkpoint;
@@ -26,7 +24,23 @@ namespace StillSky.Player
         private void Awake()
         {
             player = GetComponent<PlayerCharacter>();
-            checkpoint = transform.position; // until the first campfire rest
+            controller = GetComponent<CharacterController>();
+            checkpoint = transform.position;
+            lastGroundedPosition = transform.position;
+        }
+
+        private void Update()
+        {
+            if (player.IsAlive && controller.isGrounded && IsCenterOverGround())
+                lastGroundedPosition = transform.position;
+        }
+
+        private bool IsCenterOverGround()
+        {
+            Vector3 origin = transform.TransformPoint(controller.center);
+            float distance = controller.height * 0.5f + 0.3f;
+            int mask = ~(1 << gameObject.layer); 
+            return Physics.Raycast(origin, Vector3.down, distance, mask, QueryTriggerInteraction.Ignore);
         }
 
         private void OnEnable()
@@ -46,7 +60,8 @@ namespace StillSky.Player
 
         private void OnPlayerDied(Character _)
         {
-            StartCoroutine(RespawnRoutine(transform.position));
+            Vector3 dropPosition = IsCenterOverGround() ? transform.position : lastGroundedPosition;
+            StartCoroutine(RespawnRoutine(dropPosition));
         }
 
         private IEnumerator RespawnRoutine(Vector3 deathPosition)

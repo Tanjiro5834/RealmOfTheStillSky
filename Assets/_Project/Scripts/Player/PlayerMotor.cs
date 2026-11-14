@@ -4,11 +4,6 @@ using UnityEngine.InputSystem;
 
 namespace StillSky.Player
 {
-    /// <summary>
-    /// Moves the player relative to where it faces (yaw comes from PlayerLook).
-    /// Handles walk, sprint (costs stamina), jump and gravity through a CharacterController.
-    /// Other systems can lock input (attacks) or take over velocity (dodge).
-    /// </summary>
     [RequireComponent(typeof(CharacterController))]
     public class PlayerMotor : MonoBehaviour
     {
@@ -31,15 +26,11 @@ namespace StillSky.Player
         private float verticalVelocity;
         private Vector3? overrideVelocity;
 
-        /// <summary>Horizontal speed this frame, for the Animator later.</summary>
         public float CurrentSpeed { get; private set; }
         public bool IsGrounded => controller.isGrounded;
         public bool IsSprinting { get; private set; }
 
-        /// <summary>True while attacking: no walking or jumping.</summary>
         public bool InputLocked { get; set; }
-
-        /// <summary>Dodge sets this each frame; null gives control back to input.</summary>
         public void SetOverrideVelocity(Vector3? velocity) => overrideVelocity = velocity;
 
         private void Awake()
@@ -64,8 +55,6 @@ namespace StillSky.Player
         private void Update()
         {
             bool grounded = controller.isGrounded;
-
-            // Keep a small downward force so isGrounded stays reliable on slopes.
             if (grounded && verticalVelocity < 0f)
                 verticalVelocity = -2f;
 
@@ -88,7 +77,7 @@ namespace StillSky.Player
                 horizontal = move * (IsSprinting ? sprintSpeed : walkSpeed);
 
                 if (!InputLocked && grounded && jumpAction.action.WasPressedThisFrame())
-                    verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity); // v = sqrt(2gh)
+                    verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
             }
 
             verticalVelocity += gravity * Time.deltaTime;

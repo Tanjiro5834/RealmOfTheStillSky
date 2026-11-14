@@ -33,6 +33,16 @@ namespace StillSky.Core
             if (IsDead) Died?.Invoke();
         }
 
+        public void Kill(GameObject source)
+        {
+            if (IsDead) return;
+
+            float amount = Current;
+            Current = 0f;
+            Damaged?.Invoke(amount, source);
+            Died?.Invoke();
+        }
+
         public void Heal(float amount)
         {
             if (IsDead || amount <= 0f) return;

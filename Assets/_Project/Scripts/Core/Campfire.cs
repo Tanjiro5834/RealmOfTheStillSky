@@ -6,25 +6,20 @@ using UnityEngine.InputSystem;
 
 namespace StillSky.World
 {
-    /// <summary>
-    /// Checkpoint. Press Interact nearby to rest: full health and stamina,
-    /// and this becomes Kael's respawn point.
-    /// </summary>
     public class Campfire : MonoBehaviour
     {
         [SerializeField] private string campfireName = "Duskhollow";
         [SerializeField] private InputActionReference interactAction;
         [SerializeField] private float interactRange = 2.5f;
-        [SerializeField] private Transform respawnPoint;  // optional; defaults to in front of the fire
-        [SerializeField] private GameObject promptUI;     // optional "Press E to rest" text
-        [SerializeField] private Light fireLight;         // optional; turns on after the first rest
+        [SerializeField] private Transform respawnPoint;  
+        [SerializeField] private GameObject promptUI;     
+        [SerializeField] private Light fireLight;         
 
         private PlayerCharacter player;
         private bool playerInRange;
 
         private void OnEnable()
         {
-            // Enable but never Disable in OnDisable: other campfires share this action.
             interactAction.action.Enable();
             interactAction.action.performed += OnInteract;
         }
