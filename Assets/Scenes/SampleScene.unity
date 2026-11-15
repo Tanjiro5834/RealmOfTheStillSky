@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 252437}
   - component: {fileID: 252436}
   - component: {fileID: 252442}
+  - component: {fileID: 252443}
   m_Layer: 0
   m_Name: EmberScout
   m_TagString: Untagged
@@ -159,8 +160,18 @@ MonoBehaviour:
   attackCooldown: 1.5
   turnSpeed: 8
   repathInterval: 0.2
+  windupTime: 0.6
+  trackTime: 0.35
+  recoveryTime: 0.5
+  hitArc: 100
+  reachMultiplier: 1.15
   baseDamage: 10
   corpseLifetime: 3
+  tint: {fileID: 0}
+  windupColor: {r: 1, g: 0.35, b: 0.05, a: 1}
+  hitFlashColor: {r: 1, g: 1, b: 1, a: 1}
+  hitFlashTime: 0.08
+  corpseColor: {r: 0.15, g: 0.15, b: 0.15, a: 1}
 --- !u!114 &252437
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -291,6 +302,19 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &252443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 252435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9fdd96a18413924ba8a174128f0756d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StillSky.Core.BodyTint
+  target: {fileID: 0}
 --- !u!1 &220331941
 GameObject:
   m_ObjectHideFlags: 0
@@ -889,6 +913,7 @@ GameObject:
   - component: {fileID: 352744825}
   - component: {fileID: 352744824}
   - component: {fileID: 352744830}
+  - component: {fileID: 352744831}
   m_Layer: 0
   m_Name: EmberScout (2)
   m_TagString: Untagged
@@ -914,8 +939,18 @@ MonoBehaviour:
   attackCooldown: 1.5
   turnSpeed: 8
   repathInterval: 0.2
+  windupTime: 0.6
+  trackTime: 0.35
+  recoveryTime: 0.5
+  hitArc: 100
+  reachMultiplier: 1.15
   baseDamage: 10
   corpseLifetime: 3
+  tint: {fileID: 0}
+  windupColor: {r: 1, g: 0.35, b: 0.05, a: 1}
+  hitFlashColor: {r: 1, g: 1, b: 1, a: 1}
+  hitFlashTime: 0.08
+  corpseColor: {r: 0.15, g: 0.15, b: 0.15, a: 1}
 --- !u!114 &352744825
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1046,6 +1081,19 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &352744831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 352744823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9fdd96a18413924ba8a174128f0756d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StillSky.Core.BodyTint
+  target: {fileID: 0}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -1466,6 +1514,7 @@ GameObject:
   - component: {fileID: 817049222}
   - component: {fileID: 817049221}
   - component: {fileID: 817049227}
+  - component: {fileID: 817049228}
   m_Layer: 0
   m_Name: EmberScout (1)
   m_TagString: Untagged
@@ -1491,8 +1540,18 @@ MonoBehaviour:
   attackCooldown: 1.5
   turnSpeed: 8
   repathInterval: 0.2
+  windupTime: 0.6
+  trackTime: 0.35
+  recoveryTime: 0.5
+  hitArc: 100
+  reachMultiplier: 1.15
   baseDamage: 10
   corpseLifetime: 3
+  tint: {fileID: 0}
+  windupColor: {r: 1, g: 0.35, b: 0.05, a: 1}
+  hitFlashColor: {r: 1, g: 1, b: 1, a: 1}
+  hitFlashTime: 0.08
+  corpseColor: {r: 0.15, g: 0.15, b: 0.15, a: 1}
 --- !u!114 &817049222
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1623,6 +1682,19 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &817049228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 817049220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9fdd96a18413924ba8a174128f0756d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StillSky.Core.BodyTint
+  target: {fileID: 0}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
